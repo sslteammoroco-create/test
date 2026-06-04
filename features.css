@@ -1,0 +1,108 @@
+@keyframes floatDynamic {
+    0% { transform: translate3d(0, 0, 0) rotate(0deg); }
+    33% { transform: translate3d(var(--float-x1, 0px), var(--float-y1, -8px), 0) rotate(var(--float-r1, 1deg)); }
+    66% { transform: translate3d(var(--float-x2, 0px), var(--float-y2, 6px), 0) rotate(var(--float-r2, -1deg)); }
+    100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+}
+
+.antigravity {
+    /* Using transform3d ensures GPU acceleration for smooth performance */
+    animation: floatDynamic var(--float-duration, 6s) ease-in-out infinite;
+    animation-delay: var(--float-delay, 0s);
+    /* Vital: ensure the floating container does not block clicks on its children */
+    pointer-events: auto !important;
+}
+
+/* Pause animation on hover to make clicking easier */
+.antigravity:hover {
+    animation-play-state: paused;
+}
+
+/* Slider CSS */
+.slider-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.slider-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.slider-slide {
+    min-width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slider-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Slider Controls */
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 30, 64, 0.6);
+    color: white;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s, background 0.2s;
+    z-index: 10;
+}
+
+.slider-container:hover .slider-btn {
+    opacity: 1;
+}
+
+.slider-btn:hover {
+    background: rgba(0, 30, 64, 0.9);
+}
+
+.slider-prev {
+    left: 8px;
+}
+
+.slider-next {
+    right: 8px;
+}
+
+.slider-dots {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 10;
+}
+
+.slider-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(0, 30, 64, 0.2);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.slider-dot.active {
+    background: #003366;
+}
