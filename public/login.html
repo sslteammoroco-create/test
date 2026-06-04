@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr" class="light">
+<head>
+    <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/aida-public/AB6AXuD56slf-yqw9R0BOfNlcB7T7PbF_9N2prgmV-ETg4LM1-gKesZ3Z9k8xl4liSTPg4GTRaczy3VO2Wznl-1LpLUogdZyjGOwdB9dfW7VIpS0pJff6QJxDJhwj_q6_5sl4QZPHKZLc2K7Im0qlursY0QjdDvYz4co4mhYs1m4P27GnSiIVFlladCDQptYbmT_81jeSkDCjUsL_8Ke9x9xDiHcGUv-nMif_NdvAWMrHSkslUprX91hFBONgkqdvykqM1gimW1Qief3V5c">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Login | CNC Tools Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#001e40",
+                        secondary: "#515f74",
+                        background: "#f9f9f9",
+                        "surface-container": "#eeeeee",
+                    },
+                    fontFamily: {
+                        headline: ["Space Grotesk"],
+                        body: ["Inter"],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .blueprint-grid {
+            background-image: linear-gradient(to right, rgba(0, 30, 64, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(0, 30, 64, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .login-card {
+            box-shadow: 20px 20px 0px 0px rgba(0, 30, 64, 1);
+        }
+    </style>
+</head>
+<body class="bg-background font-body min-h-screen flex items-center justify-center p-6 blueprint-grid">
+    <div class="w-full max-w-md bg-white border border-primary/10 p-8 login-card">
+        <div class="mb-10">
+            <h1 class="font-headline text-3xl font-bold text-primary uppercase tracking-tighter mb-2">Accès Administrateur</h1>
+            <p class="text-secondary text-sm">Veuillez vous connecter pour gérer l'inventaire CNC.</p>
+        </div>
+
+        <form id="login-form" class="space-y-6">
+            <div>
+                <label for="email" class="block text-[10px] font-bold uppercase tracking-widest text-primary mb-2">Email Professionnel</label>
+                <input type="email" id="email" required 
+                    class="w-full border-primary/20 focus:border-primary focus:ring-0 text-sm py-3 px-4 bg-slate-50 transition-colors"
+                    placeholder="admin@cnctools.com">
+            </div>
+
+            <div>
+                <label for="password" class="block text-[10px] font-bold uppercase tracking-widest text-primary mb-2">Mot de passe</label>
+                <input type="password" id="password" required 
+                    class="w-full border-primary/20 focus:border-primary focus:ring-0 text-sm py-3 px-4 bg-slate-50 transition-colors"
+                    placeholder="••••••••">
+            </div>
+
+            <div id="error-message" class="hidden text-red-600 text-xs font-medium"></div>
+
+            <button type="submit" 
+                class="w-full bg-primary text-white py-4 font-headline font-bold uppercase tracking-[0.2em] text-xs hover:bg-slate-800 transition-all flex items-center justify-center gap-2">
+                S'authentifier <span class="material-symbols-outlined text-sm">lock_open</span>
+            </button>
+        </form>
+
+        <div class="mt-8 pt-6 border-t border-slate-100 flex justify-between items-center">
+            <a href="index.html" class="text-[10px] font-bold uppercase tracking-widest text-secondary hover:text-primary transition-colors flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">arrow_back</span> Retour au magasin
+            </a>
+            <span class="text-[10px] text-slate-400 font-mono">v1.0.2 // SECURE CONNECTION</span>
+        </div>
+    </div>
+
+    <!-- Firebase Compat SDKs (allows running under file:// protocol) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyDH4DK1J6SxHRhwtYDLBuXVT_E_qRDAksw",
+        authDomain: "tmmf-7848d.firebaseapp.com",
+        projectId: "tmmf-7848d",
+        storageBucket: "tmmf-7848d.firebasestorage.app",
+        messagingSenderId: "795485005893",
+        appId: "1:795485005893:web:7aa77900bfff30d6afdb2c",
+        measurementId: "G-4NGJ4LH1XJ"
+      };
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      window.auth = firebase.auth();
+    </script>
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

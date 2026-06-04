@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html class="light" lang="fr">
+<head>
+    <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/aida-public/AB6AXuD56slf-yqw9R0BOfNlcB7T7PbF_9N2prgmV-ETg4LM1-gKesZ3Z9k8xl4liSTPg4GTRaczy3VO2Wznl-1LpLUogdZyjGOwdB9dfW7VIpS0pJff6QJxDJhwj_q6_5sl4QZPHKZLc2K7Im0qlursY0QjdDvYz4co4mhYs1m4P27GnSiIVFlladCDQptYbmT_81jeSkDCjUsL_8Ke9x9xDiHcGUv-nMif_NdvAWMrHSkslUprX91hFBONgkqdvykqM1gimW1Qief3V5c">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Commander via Message | JBGERMANY</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+          tailwind.config = {
+            darkMode: "class",
+            theme: {
+              extend: {
+                "colors": {
+                  "primary": "#001e40",
+                  "primary-container": "#003366",
+                  "secondary": "#515f74",
+                  "background": "#f9f9f9",
+                  "surface": "#ffffff",
+                  "surface-container-low": "#f3f3f3",
+                  "surface-container-high": "#e8e8e8",
+                  "outline": "#737780",
+                  "on-background": "#1a1c1c",
+                  "on-primary": "#ffffff",
+                  "error": "#ba1a1a"
+                },
+                "fontFamily": {
+                  "headline": ["Space Grotesk"],
+                  "body": ["Inter"]
+                }
+              },
+            },
+          }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .blueprint-grid {
+            background-image: radial-gradient(circle, #003366 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.03;
+        }
+        
+        /* Custom Premium Carousel Styles */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+        }
+        .carousel-track {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+        }
+        .carousel-slide img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #e5e7eb;
+            color: #001e40;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+            border-radius: 9999px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .carousel-btn:hover {
+            background: #001e40;
+            color: #ffffff;
+            border-color: #001e40;
+            scale: 1.05;
+        }
+        .carousel-prev { left: 16px; }
+        .carousel-next { right: 16px; }
+        
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 9999px;
+            background: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .carousel-dot.active {
+            background: #001e40;
+            width: 24px;
+        }
+        
+        .carousel-thumbnails {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .carousel-thumb {
+            aspect-ratio: 1 / 1;
+            border: 2px solid transparent;
+            cursor: pointer;
+            overflow: hidden;
+            background: #ffffff;
+            padding: 4px;
+            transition: all 0.15s;
+        }
+        .carousel-thumb:hover {
+            border-color: #cbd5e1;
+        }
+        .carousel-thumb.active {
+            border-color: #001e40;
+        }
+        .carousel-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        /* Floating animations for aesthetic details */
+        @keyframes subtle-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
+        }
+        .wa-pulse {
+            animation: subtle-pulse 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body antialiased">
+
+<!-- Barre de Navigation Supérieure -->
+<header class="bg-white dark:bg-[#001e40] shadow-sm sticky top-0 z-50">
+    <nav class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto relative">
+        <!-- Left: Logo -->
+        <div class="flex-1 flex justify-start">
+            <a href="index.html" class="font-['Space_Grotesk'] text-xl font-bold tracking-tighter text-[#001e40] dark:text-white uppercase block">
+                <div class="flex items-center gap-3">
+                    <img alt="JBGERMANY Logo" class="h-14 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD56slf-yqw9R0BOfNlcB7T7PbF_9N2prgmV-ETg4LM1-gKesZ3Z9k8xl4liSTPg4GTRaczy3VO2Wznl-1LpLUogdZyjGOwdB9dfW7VIpS0pJff6QJxDJhwj_q6_5sl4QZPHKZLc2K7Im0qlursY0QjdDvYz4co4mhYs1m4P27GnSiIVFlladCDQptYbmT_81jeSkDCjUsL_8Ke9x9xDiHcGUv-nMif_NdvAWMrHSkslUprX91hFBONgkqdvykqM1gimW1Qief3V5c"/>
+                </div>
+            </a>
+        </div>
+
+        <!-- Center: Navigation -->
+        <div class="hidden md:flex flex-col md:flex-row absolute md:absolute top-full md:top-1/2 left-0 md:left-1/2 w-full md:w-auto -translate-x-0 md:-translate-x-1/2 -translate-y-0 md:-translate-y-1/2 bg-white dark:bg-[#001e40] md:bg-transparent p-8 md:p-0 shadow-lg md:shadow-none items-start md:items-center gap-6 md:gap-8 font-['Space_Grotesk'] tracking-tight text-sm uppercase z-50">
+            <a class="nav-link text-slate-600 dark:text-slate-400 hover:text-[#003366] dark:hover:text-blue-200 transition-colors duration-200" href="index.html">Accueil</a>
+            <a class="nav-link text-slate-600 dark:text-slate-400 hover:text-[#003366] dark:hover:text-blue-200 transition-colors duration-200" href="products.html">Produits</a>
+            <a class="nav-link text-slate-600 dark:text-slate-400 hover:text-[#003366] dark:hover:text-blue-200 transition-colors duration-200" href="machines.html">Machines</a>
+            <a class="nav-link text-slate-600 dark:text-slate-400 hover:text-[#003366] dark:hover:text-blue-200 transition-colors duration-200" href="about.html">À Propos</a>
+        </div>
+
+        <!-- Right: Search (Placeholder for consistency) -->
+        <div class="flex-1 flex justify-end items-center gap-6">
+            <div class="relative hidden lg:block">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">search</span>
+                <input class="bg-surface-container-high border-none text-xs py-2 pl-10 pr-4 w-64 focus:ring-1 focus:ring-primary" placeholder="Rechercher..." type="text"/>
+            </div>
+            <button class="md:hidden text-primary dark:text-white" id="mobile-menu-btn">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+        </div>
+    </nav>
+</header>
+
+<!-- Main Container -->
+<main class="max-w-screen-2xl mx-auto px-8 py-12 relative min-h-screen">
+    <!-- Blueprint Watermark -->
+    <div class="absolute inset-0 blueprint-grid pointer-events-none"></div>
+
+    <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12">
+        
+        <!-- Left: Carousel Gallery Card -->
+        <div class="lg:col-span-6 flex flex-col">
+            <div class="bg-white p-6 shadow-sm border border-slate-200">
+                <div class="carousel-container bg-surface-container-low flex items-center justify-center p-8" id="carousel">
+                    <img id="main-product-image" src="" alt="Chargement..." class="max-w-full max-h-full object-contain" />
+                </div>
+            </div>
+            
+            <!-- Description Bento Box -->
+            <div class="mt-6 bg-white p-8 border border-slate-200 shadow-sm flex flex-col justify-between flex-1">
+                <div>
+                    <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tight mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-xl">description</span> Description Technique
+                    </h3>
+                    <p class="text-slate-600 text-sm leading-relaxed whitespace-pre-line" id="p-desc">
+                        Chargement des détails techniques de cet outillage de haute précision...
+                    </p>
+                </div>
+                <div class="mt-8 pt-6 border-t border-slate-100 flex justify-between items-center">
+                    <div class="flex items-center gap-2 text-xs text-secondary font-bold uppercase tracking-wider">
+                        <span class="w-2 h-2 bg-green-500 rounded-full"></span> Qualité ISO 9001
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-secondary font-bold uppercase tracking-wider">
+                        <span class="w-2 h-2 bg-green-500 rounded-full"></span> Carbure monobloc
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Order Panel Card -->
+        <div class="lg:col-span-6 flex flex-col gap-6">
+            <div class="bg-white p-8 shadow-sm border border-slate-200">
+                <!-- Product Metadata -->
+                <div class="border-b border-slate-100 pb-6 mb-6">
+                    <span class="bg-[#001e40]/10 text-primary text-[10px] px-3 py-1 font-bold uppercase tracking-wider" id="p-cat">
+                        CHARGEMENT...
+                    </span>
+                    <h1 class="font-headline text-3xl font-bold text-primary uppercase mt-4 mb-2 tracking-tight" id="p-name">
+                        ...
+                    </h1>
+                    <div class="flex justify-between items-end mt-4">
+                        <div>
+                            <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Gamme tarifaire</p>
+                            <p class="font-headline text-3xl font-extrabold text-primary tracking-tight mt-1" id="p-price">
+                                ...
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-2 bg-green-50 text-green-700 px-3 py-1 text-xs font-bold uppercase tracking-wider">
+                            <span class="material-symbols-outlined text-sm font-bold">verified</span> En Stock
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order via Message Form -->
+                <div class="space-y-6">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="material-symbols-outlined text-[#25D366] text-2xl font-bold">chat_bubble</span>
+                        <h2 class="font-headline text-xl font-bold text-primary uppercase tracking-tight">Commander par Message</h2>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed mb-6">
+                        Remplissez vos coordonnées ci-dessous pour formater instantanément votre demande et l'envoyer directement à notre équipe technique sur WhatsApp.
+                    </p>
+
+                    <form id="order-form" class="space-y-4">
+                        <!-- Nom complet -->
+                        <div class="flex flex-col gap-1.5">
+                            <label for="o-name" class="text-[10px] uppercase font-bold text-[#515f74] tracking-wider">Nom Complet *</label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">person</span>
+                                <input type="text" id="o-name" required placeholder="Ex: Ahmed Alami" class="w-full pl-10 pr-4 py-3 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary text-sm font-medium bg-slate-50 focus:bg-white transition-all"/>
+                            </div>
+                        </div>
+
+                        <!-- Téléphone -->
+                        <div class="flex flex-col gap-1.5">
+                            <label for="o-phone" class="text-[10px] uppercase font-bold text-[#515f74] tracking-wider">Numéro de Téléphone *</label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">call</span>
+                                <input type="tel" id="o-phone" required placeholder="Ex: 06 65 37 66 78" class="w-full pl-10 pr-4 py-3 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary text-sm font-medium bg-slate-50 focus:bg-white transition-all"/>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Ville de livraison -->
+                            <div class="flex flex-col gap-1.5">
+                                <label for="o-city" class="text-[10px] uppercase font-bold text-[#515f74] tracking-wider">Ville de Livraison *</label>
+                                <div class="relative">
+                                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">distance</span>
+                                    <input type="text" id="o-city" required placeholder="Ex: Casablanca" class="w-full pl-10 pr-4 py-3 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary text-sm font-medium bg-slate-50 focus:bg-white transition-all"/>
+                                </div>
+                            </div>
+
+                            <!-- Quantité Stepper -->
+                            <div class="flex flex-col gap-1.5">
+                                <label class="text-[10px] uppercase font-bold text-[#515f74] tracking-wider">Quantité</label>
+                                <div class="flex items-center border border-slate-200 bg-slate-50 w-full h-[46px]">
+                                    <button type="button" id="qty-minus" class="px-4 h-full text-slate-600 hover:bg-slate-100 hover:text-primary transition-colors font-bold text-lg select-none">-</button>
+                                    <input type="number" id="o-qty" value="1" min="1" class="w-full text-center border-none bg-transparent text-sm font-bold text-primary focus:ring-0" readonly/>
+                                    <button type="button" id="qty-plus" class="px-4 h-full text-slate-600 hover:bg-slate-100 hover:text-primary transition-colors font-bold text-lg select-none">+</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notes / Spécifications -->
+                        <div class="flex flex-col gap-1.5">
+                            <label for="o-notes" class="text-[10px] uppercase font-bold text-[#515f74] tracking-wider">Spécifications / Notes additionnelles</label>
+                            <textarea id="o-notes" rows="3" placeholder="Ex: Diamètre queue 6mm, tolérance de coupe standard..." class="w-full p-4 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary text-sm font-medium bg-slate-50 focus:bg-white transition-all resize-none"></textarea>
+                        </div>
+
+                        <!-- Purchase Button -->
+                        <button type="submit" class="w-full bg-[#25D366] hover:bg-[#128C7E] text-white py-4 px-6 flex items-center justify-center gap-3 font-headline font-bold uppercase tracking-widest text-sm transition-all shadow-lg shadow-green-500/20 wa-pulse mt-6" id="submit-order-btn">
+                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"></path>
+                            </svg>
+                            <span>Envoyer la Commande</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Quick Assist Bento Card -->
+            <div class="bg-primary-container p-6 text-white flex justify-between items-center gap-4">
+                <div>
+                    <h4 class="font-headline text-lg font-bold uppercase mb-1">Besoin d'assistance ?</h4>
+                    <p class="text-xs text-blue-200">Notre bureau technique est disponible pour valider vos plans.</p>
+                </div>
+                <a href="https://wa.me/212665376678" target="_blank" class="bg-white/10 hover:bg-white/20 text-white font-headline text-xs font-bold px-4 py-3 uppercase tracking-wider transition-colors whitespace-nowrap">
+                    Support Live
+                </a>
+            </div>
+        </div>
+        
+    </div>
+</main>
+
+<!-- Pied de page -->
+<footer class="bg-slate-50 text-[#001e40] border-t border-slate-200 mt-24">
+    <div class="bg-[#003366]/5 px-8 py-6 max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+        <p class="font-['Inter'] text-xs font-medium text-slate-500">© 2024 JBGERMANY. Précision Ingéniée.</p>
+        <div class="flex gap-6">
+            <a href="products.html" class="text-slate-500 hover:text-primary transition-colors text-xs">Produits</a>
+            <a href="machines.html" class="text-slate-500 hover:text-primary transition-colors text-xs">Machines</a>
+            <a href="about.html" class="text-slate-500 hover:text-primary transition-colors text-xs">À Propos</a>
+        </div>
+    </div>
+</footer>
+
+<!-- WhatsApp Floating Widget (For absolute safety) -->
+<a href="https://wa.me/212665376678" target="_blank" class="fixed bottom-6 right-6 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform z-50 flex items-center justify-center group" title="Contactez-nous sur WhatsApp">
+    <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"></path>
+    </svg>
+    <span class="absolute right-full mr-4 bg-white text-primary text-xs font-bold px-3 py-2 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Support WhatsApp</span>
+</a>
+
+<!-- Firebase Compat SDKs (allows running under file:// protocol) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<!-- Real-time dynamic router script -->
+<script>
+    // --- Firebase Init ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyDH4DK1J6SxHRhwtYDLBuXVT_E_qRDAksw",
+      authDomain: "tmmf-7848d.firebaseapp.com",
+      projectId: "tmmf-7848d",
+      storageBucket: "tmmf-7848d.firebasestorage.app",
+      messagingSenderId: "795485005893",
+      appId: "1:795485005893:web:7aa77900bfff30d6afdb2c",
+      measurementId: "G-4NGJ4LH1XJ"
+    };
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+
+    // --- Catalog data for local fallbacks / static items ---
+    const productsCatalog = {
+        '1': { id: '1', name: 'Fraise Spirale Downcut', price: 'Sur Devis', category: 'Bois Dur', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDpSWbH8m0RivdRQO_eRZIZfqrOe8zwb-8_6br1XN3lPgsLG8NBl71zhzfkR-wwPqUnlVF20jGioWuGAfpuaMgPSbd3gRtyG-FXqI97bgQxpbvK8aA2foVvyYYVMNNyOTY8Nb-vDiOnGEg9pgGbNHOxuXQ5H-FQ8rDDjFt5nXpPkp2GuRbBDlvjwrTAvxYMeQLEYdIPuTKMZ9-G5levAbw9PRQsrmjfJeeyE65AK-i_7snNcAVV6dY6AekxuEvrMeWEtPxt1KS9Rg', description: 'Queue 1/4" - Carbure Monobloc - 18 000 tr/min. Conçue pour une finition de bord parfaite sur le bois dur, avec évacuation des copeaux vers le bas.' },
+        '2': { id: '2', name: 'Aluma-Cut Mono-dent', price: 'Sur Devis', category: 'Aluminium', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDBlbsudfI_1M19r54rUaopiEVsfvpFGBKPJINoT_Tt2aVj6VPhAQ21ZjxJE4k116kG3Z0JLsQD0UWAw_Hu2lkxK5jlv4hyMWtKB9ZkJboKKs78Uqa_9jIb6X7tQwgS5wEI6_MR5vmCZ9AMgZvnBHqb5CIOgC-E6zCY1BbAh3fmHWXLkx-ieZr-QZva4eEGymkmUQxpUl4a_FhBGdyQNv2pVQOhjjh1xOiODRUHxapgd7yqF_nCiywHaG6KDvy8xaB-gnTbItSQFg', description: 'Queue 1/8" - Revêtement ZrN - 24 000 tr/min. Spécifiquement équilibrée pour l\'usinage de l\'aluminium et des métaux non ferreux à haute fréquence.' },
+        '3': { id: '3', name: 'Mise en bout Compression', price: 'Sur Devis', category: 'Contreplaqué', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDwhaayL3Z7YdZhboikP9QS-421vsfkXyrcfgYyQtGCsV2xljUBiHiqzlzEYpnO46b05HoRd8v_UrY9O2EDfYRySmH24kdjGz9vLZWnMqux22jZP_nAQ2vdFVx9iGJ-bWTeqXxL5dAY1b4CcfhY_3Gv4IsHcJZmRx0Ll7XyRz7hI4SibUwLPyZKgzXdnkpzSgAuX9dIxP6jKJyfTJ_S-O1vBxoEgQw5HJH72A19FSn8X8odFn7gEiZHTP3pGJXAjN1WesBvzgS9Uw', description: 'Queue 1/2" - Revêtement Céramique - 15 000 tr/min. La géométrie hélicoïdale Up-Down empêche l\'éclatement des deux faces du panneau mélaminé ou contreplaqué.' }
+    };
+
+    const machinesCatalog = {
+        '1': {
+            id: 'm1',
+            name: 'SP High Power Fiber Laser Cutting Machine',
+            category: 'CNC Laser Métal',
+            price: 'Sur Devis',
+            images: ['images/machine1.png', 'images/sp-fiber-laser.png'],
+            description: "Système de découpe laser fibre ultra-puissant (puissances disponibles : 8kW, 12kW, 20kW) équipé d'un capot de protection complet et d'une table d'échange automatique pour un rendement industriel maximal. Découpe ultra-rapide des tôles d'acier, cuivre et aluminium."
+        },
+        '2': {
+            id: 'm2',
+            name: 'EL-Series Efficient Fiber Laser Cutter',
+            category: 'CNC Laser Métal',
+            price: 'Sur Devis',
+            images: ['images/machine2.webp', 'images/machine1.png'],
+            description: "Découpeur laser fibre haute efficacité 3000W conçu pour la production continue. Doté d'une plateforme d'échange ultra-rapide de 15 secondes et d'un cadre haute rigidité double-entraînement, idéal pour les tolérances géométriques fines."
+        },
+        '3': {
+            id: 'm3',
+            name: 'Presse Plieuse Hydraulique',
+            category: 'Formage Métal',
+            price: 'Sur Devis',
+            images: ['images/machine3.png'],
+            description: "Presse plieuse hydraulique industrielle avec contrôle électrique coordonné et système de compensation automatique du bombage. Stabilité extrême du tablier pour des angles de pliage parfaits sur de grandes longueurs."
+        },
+        '4': {
+            id: 'm4',
+            name: 'Scie à pont CNC 5+1 Blue Elephant',
+            category: 'Découpe Pierre / Métal',
+            price: 'Sur Devis',
+            images: ['images/blueelephent2.jpg', 'images/blueelephent1.jpg', 'images/blueelephent3.jpg'],
+            description: "Scie à pont CNC 5+1 axes de marque réputée Blue Elephant. Diamètre de lame 350-450 mm. Tête rotative à 360° pour les coupes d'onglet et les profils complexes. Idéale pour le marbre, granit et matériaux composites."
+        },
+        '5': {
+            id: 'm5',
+            name: 'Routeur CNC 2060 ATC',
+            category: 'Routeur CNC ATC',
+            price: 'Sur Devis',
+            images: ['images/blueelephent1.jpg', 'images/blueelephent2.jpg', 'images/blueelephent3.jpg'],
+            description: "Centre d'usinage Routeur CNC industriel ELECNC-2060 ATC avec changeur automatique de 12 outils linéaire. Table de travail géante de 2000 mm x 6000 mm avec pompe à vide à anneau liquide de forte puissance."
+        },
+        '6': {
+            id: 'm6',
+            name: 'Routeur CNC Patrol avec caméra CCD ATC 2133',
+            category: 'Routeur CNC Oscillating',
+            price: 'Sur Devis',
+            images: ['images/blueelephent3.jpg', 'images/blueelephent1.jpg', 'images/blueelephent2.jpg'],
+            description: "Routeur CNC hybride avec caméra de repérage CCD et système de couteau oscillant tangentiel ATC 2133. Conçu spécifiquement pour la découpe de vinyles, cartons denses, caoutchoucs et panneaux rigides avec calage optique."
+        }
+    };
+
+    // Beautiful default secondary images if product only has one image
+    const backupCNCImages = [
+        'https://images.unsplash.com/photo-1565439399-1da88b1ccf28?auto=format&fit=crop&q=80&w=600',
+        'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=600'
+    ];
+
+    // --- Dynamic Parameters Routing ---
+    const params = new URLSearchParams(window.location.search);
+    const pid = params.get('pid');  // Firestore product id
+    const id = params.get('id');    // Static catalog product id
+    const mid = params.get('mid');  // Static machine catalog id
+
+    let currentItem = {
+        name: 'Outil de Précision CNC',
+        category: 'Outillage',
+        price: 'Sur Devis',
+        images: backupCNCImages,
+        description: 'Usinage industriel haute performance.'
+    };
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        // --- 1. Load Item Data ---
+        if (pid) {
+            try {
+                const docSnap = await db.collection("products").doc(pid).get();
+                if (docSnap.exists) {
+                    const data = docSnap.data();
+                    currentItem = {
+                        name: data.name || 'Produit sans désignation',
+                        category: data.category || 'Outillage',
+                        price: 'Sur Devis',
+                        description: data.description || 'Aucune fiche descriptive fournie.',
+                        images: []
+                    };
+                    
+                    // Parse images (supporting commas if multiple URL provided)
+                    if (data.image) {
+                        const splitImgs = data.image.split(',').map(s => s.trim()).filter(Boolean);
+                        currentItem.images.push(...splitImgs);
+                    }
+                    
+                    // Fill up to 3 images for beautiful gallery
+                    if (currentItem.images.length === 0) {
+                        currentItem.images.push('https://placehold.co/400x400/e8e8e8/001e40?text=CNC+Tool');
+                    }
+                    while (currentItem.images.length < 3) {
+                        currentItem.images.push(backupCNCImages[currentItem.images.length - 1]);
+                    }
+                } else {
+                    console.error("Aucun produit Firestore trouvé avec l'id :", pid);
+                }
+            } catch (err) {
+                console.error("Erreur de lecture Firestore :", err);
+            }
+        } else if (id && productsCatalog[id]) {
+            currentItem = productsCatalog[id];
+            currentItem.images = [currentItem.image, ...backupCNCImages];
+            currentItem.price = 'Sur Devis';
+        } else if (mid && machinesCatalog[mid]) {
+            currentItem = machinesCatalog[mid];
+            // Ensure we have at least 3 slides for machines using backups
+            if (!currentItem.images) currentItem.images = [];
+            while (currentItem.images.length < 3) {
+                currentItem.images.push(backupCNCImages[currentItem.images.length - 1]);
+            }
+        } else {
+            // Ultimate fallback (just in case)
+            currentItem = productsCatalog['1'];
+            currentItem.images = [currentItem.image, ...backupCNCImages];
+            currentItem.price = 'Sur Devis';
+        }
+
+        // --- 2. Render Page Elements ---
+        document.getElementById('p-name').textContent = currentItem.name;
+        document.getElementById('p-cat').textContent = currentItem.category;
+        document.getElementById('p-price').textContent = currentItem.price;
+        document.getElementById('p-desc').textContent = currentItem.description;
+        document.title = `${currentItem.name} - Commande | JBGERMANY`;
+
+        // --- 3. Set Main Image ---
+        const mainImage = document.getElementById('main-product-image');
+        if (currentItem.images && currentItem.images.length > 0) {
+            mainImage.src = currentItem.images[0];
+            mainImage.alt = currentItem.name;
+        }
+
+        // --- 4. Form Actions & Quantity Stepper ---
+        const qtyInput = document.getElementById('o-qty');
+        document.getElementById('qty-minus').addEventListener('click', () => {
+            let val = parseInt(qtyInput.value) || 1;
+            if (val > 1) qtyInput.value = val - 1;
+        });
+
+        document.getElementById('qty-plus').addEventListener('click', () => {
+            let val = parseInt(qtyInput.value) || 1;
+            qtyInput.value = val + 1;
+        });
+
+        // Form Submit
+        document.getElementById('order-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submit-order-btn');
+            const origText = submitBtn.innerHTML;
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Enregistrement en cours...';
+
+            const orderData = {
+                customerName: document.getElementById('o-name').value.trim(),
+                customerPhone: document.getElementById('o-phone').value.trim(),
+                deliveryCity: document.getElementById('o-city').value.trim(),
+                quantity: parseInt(qtyInput.value) || 1,
+                notes: document.getElementById('o-notes').value.trim(),
+                itemName: currentItem.name,
+                itemCategory: currentItem.category,
+                itemPrice: currentItem.price,
+                createdAt: new Date().toISOString()
+            };
+
+            // ── A. Log Order into Firestore ──
+            try {
+                await db.collection('orders').add(orderData);
+            } catch (err) {
+                console.error("Firestore database log error (proceeding to WhatsApp anyway):", err);
+            }
+
+            // ── B. Compile & Send WhatsApp Message ──
+            const shopPhone = "212665376678"; // JBGERMANY official WhatsApp number
+            
+            const message = `Bonjour JBGERMANY,
+Je souhaite commander l'équipement suivant :
+
+📋 DÉTAILS COMMANDE :
+-------------------------------
+- Équipement : ${orderData.itemName}
+- Catégorie : ${orderData.itemCategory}
+- Prix : ${orderData.itemPrice}
+- Quantité : ${orderData.quantity}
+
+🚚 CLIENT & LIVRAISON :
+-------------------------------
+- Nom complet : ${orderData.customerName}
+- Téléphone : ${orderData.customerPhone}
+- Ville de livraison : ${orderData.deliveryCity}
+${orderData.notes ? `- Notes techniques : ${orderData.notes}` : ''}
+
+Merci d'avance pour votre retour commercial.`;
+
+            const whatsappUrl = `https://wa.me/${shopPhone}?text=${encodeURIComponent(message)}`;
+            
+            // Redirect to WhatsApp
+            window.open(whatsappUrl, '_blank');
+
+            // Reset button
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = origText;
+        });
+    });
+
+    // Mobile Menu logic for safety/compliance
+    document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
+        const navMenu = document.querySelector('.hidden.md\\:flex.items-center, nav .hidden.md\\:flex');
+        if (navMenu) {
+            navMenu.classList.toggle('hidden');
+            navMenu.classList.toggle('flex');
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | JBGERMANY</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000d1a;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        /* Animated grid background */
+        .bg-grid {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 100, 200, 0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 100, 200, 0.07) 1px, transparent 1px);
+            background-size: 48px 48px;
+            animation: gridMove 20s linear infinite;
+        }
+        @keyframes gridMove { from { background-position: 0 0; } to { background-position: 48px 48px; } }
+        .glow {
+            position: absolute; width: 700px; height: 700px;
+            background: radial-gradient(circle, rgba(0, 60, 160, 0.25) 0%, transparent 65%);
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            animation: breathe 5s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+        @keyframes breathe { from { transform: translate(-50%,-50%) scale(0.95); } to { transform: translate(-50%,-50%) scale(1.1); } }
+        /* Card */
+        .card {
+            position: relative; z-index: 10;
+            width: 420px;
+            background: #0a1628;
+            border: 1px solid rgba(0, 100, 200, 0.2);
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 40px 100px rgba(0,0,0,0.6);
+            overflow: hidden;
+        }
+        .card-top {
+            padding: 36px 36px 28px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            background: linear-gradient(160deg, #001e40 0%, #000d1a 100%);
+        }
+        .logo { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+        .logo-icon {
+            width: 38px; height: 38px;
+            border: 1px solid rgba(0,150,255,0.3);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; color: #60a5fa;
+        }
+        .logo-name { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 16px; color: white; letter-spacing: 2px; text-transform: uppercase; }
+        h1 { font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700; color: white; letter-spacing: -1px; text-transform: uppercase; line-height: 1; }
+        .subtitle { color: rgba(100, 160, 255, 0.7); font-size: 11px; margin-top: 8px; text-transform: uppercase; letter-spacing: 1.5px; }
+        /* Form */
+        .card-body { padding: 32px 36px 36px; }
+        .alert-error {
+            background: rgba(220,38,38,0.1);
+            border: 1px solid rgba(220,38,38,0.3);
+            color: #f87171;
+            font-size: 12px; font-weight: 600;
+            padding: 10px 14px;
+            margin-bottom: 24px;
+            display: none;
+            align-items: center; gap: 8px;
+        }
+        .alert-error.show { display: flex; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(150,180,220,0.8); margin-bottom: 8px; }
+        .input-wrap { position: relative; }
+        .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 18px; color: rgba(100,150,200,0.5); pointer-events: none; }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            font-family: 'Inter', sans-serif; font-size: 14px;
+            padding: 13px 14px 13px 44px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: rgba(59, 130, 246, 0.6);
+            background: rgba(255,255,255,0.07);
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+        }
+        input::placeholder { color: rgba(255,255,255,0.2); }
+        button[type="submit"] {
+            width: 100%; margin-top: 8px;
+            background: #1d4ed8;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700; font-size: 12px;
+            text-transform: uppercase; letter-spacing: 2px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        button[type="submit"]:hover { background: #2563eb; box-shadow: 0 8px 24px rgba(29,78,216,0.4); }
+        button[type="submit"]:active { transform: scale(0.99); }
+        .footer-note { text-align: center; font-size: 11px; color: rgba(255,255,255,0.2); margin-top: 20px; }
+        /* Material Icons lite */
+        .icon { font-family: 'Material Symbols Outlined', sans-serif; font-weight: 300; font-style: normal; font-size: 20px; line-height: 1; letter-spacing: normal; text-transform: none; white-space: nowrap; word-wrap: normal; direction: ltr; }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@300,0&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="glow"></div>
+
+<div class="card">
+    <div class="card-top">
+        <div class="logo">
+            <div class="logo-icon"><span class="icon">precision_manufacturing</span></div>
+            <div class="logo-name">JBGERMANY</div>
+        </div>
+        <h1>Admin Access</h1>
+        <p class="subtitle">Zone d'administration sécurisée</p>
+    </div>
+
+    <div class="card-body">
+        <div id="err" class="alert-error">
+            <span class="icon" style="font-size:16px;color:#f87171">error</span>
+            Identifiants incorrects. Veuillez réessayer.
+        </div>
+
+        <form action="/admin/login" method="POST">
+            <div class="form-group">
+                <label for="username">Identifiant</label>
+                <div class="input-wrap">
+                    <span class="icon input-icon">person</span>
+                    <input type="text" id="username" name="username" placeholder="admin" autocomplete="username" required autofocus>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <div class="input-wrap">
+                    <span class="icon input-icon">lock</span>
+                    <input type="password" id="password" name="password" placeholder="••••••" autocomplete="current-password" required>
+                </div>
+            </div>
+            <button type="submit">
+                <span class="icon" style="font-size:18px">login</span>
+                Accéder au tableau de bord
+            </button>
+        </form>
+        <p class="footer-note">Accès réservé aux administrateurs autorisés</p>
+    </div>
+</div>
+
+<script>
+    if (new URLSearchParams(location.search).get('error')) {
+        document.getElementById('err').classList.add('show');
+    }
+</script>
+</body>
+</html>

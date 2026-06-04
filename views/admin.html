@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard | JBGERMANY Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@300,0&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#f0f4f8;color:#001e40;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.icon{font-family:'Material Symbols Outlined';font-style:normal;font-weight:300;font-size:20px;line-height:1;vertical-align:middle}
+/* Header */
+#header{background:#001e40;color:white;padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 2px 16px rgba(0,30,64,0.3)}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;letter-spacing:1px;text-transform:uppercase}
+.status-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.logout{color:rgba(167,200,255,.8);text-decoration:none;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;display:flex;align-items:center;gap:6px;transition:color .2s}
+.logout:hover{color:white}
+/* Layout */
+#layout{display:flex;flex:1;overflow:hidden}
+/* Sidebar */
+#sidebar{width:220px;background:white;border-right:1px solid #e2e8f0;display:flex;flex-direction:column;padding:20px 12px;gap:4px;overflow-y:auto;flex-shrink:0}
+.sidebar-section{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#94a3b8;padding:8px 8px 4px;margin-top:8px}
+.sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:6px;font-size:13px;font-weight:500;color:#475569;text-decoration:none;cursor:pointer;transition:all .15s;border:none;background:none;width:100%;text-align:left}
+.sidebar-link:hover{background:#f1f5f9;color:#001e40}
+.sidebar-link.active{background:#001e40;color:white}
+.sidebar-link .icon{font-size:18px}
+/* Main */
+#main{flex:1;overflow-y:auto;padding:28px 32px}
+h1{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.5px;margin-bottom:4px}
+.subtitle{color:#64748b;font-size:13px;margin-bottom:24px}
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.stat{background:white;border:1px solid #e2e8f0;padding:20px;border-radius:8px;transition:transform .2s,box-shadow .2s}
+.stat:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,30,64,.1)}
+.stat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#94a3b8;margin-bottom:8px}
+.stat-value{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:#001e40}
+.stat.accent{background:#001e40;border-color:#001e40}
+.stat.accent .stat-label{color:rgba(167,200,255,.7)}
+.stat.accent .stat-value{color:white;font-size:16px;margin-top:4px}
+/* Toolbar */
+.toolbar{display:flex;gap:12px;margin-bottom:16px;align-items:center}
+.search-box{display:flex;align-items:center;gap:8px;background:white;border:1px solid #e2e8f0;padding:9px 14px;border-radius:6px;flex:1}
+.search-box input{border:none;outline:none;font-family:'Inter',sans-serif;font-size:13px;width:100%;color:#001e40;background:transparent}
+.search-box input::placeholder{color:#cbd5e1}
+select.filter{background:white;border:1px solid #e2e8f0;padding:9px 12px;border-radius:6px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#475569;outline:none;cursor:pointer}
+.btn-add{display:flex;align-items:center;gap:8px;background:#001e40;color:white;border:none;padding:10px 18px;border-radius:6px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:1px;cursor:pointer;transition:background .2s,box-shadow .2s;white-space:nowrap}
+.btn-add:hover{background:#003366;box-shadow:0 4px 16px rgba(0,30,64,.3)}
+/* Table */
+.table-wrap{background:white;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead{background:#f8fafc}
+th{padding:12px 16px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#94a3b8;border-bottom:1px solid #e2e8f0}
+td{padding:12px 16px;border-bottom:1px solid #f1f5f9;font-size:13px;color:#334155;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr{transition:background .12s}
+tbody tr:hover{background:#f8fafc}
+tbody tr:hover .row-actions{opacity:1}
+.prod-img{width:48px;height:48px;object-fit:cover;border:1px solid #e2e8f0;border-radius:4px;background:#f1f5f9}
+.prod-name{font-weight:600;color:#001e40;font-size:13px}
+.prod-id{font-size:10px;color:#94a3b8;font-family:monospace;margin-top:2px}
+.badge{display:inline-block;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;background:#f1f5f9;color:#475569}
+.row-actions{display:flex;gap:4px;justify-content:flex-end;opacity:0;transition:opacity .15s}
+.action-btn{background:none;border:none;cursor:pointer;padding:6px;border-radius:4px;color:#94a3b8;transition:all .15s;display:flex}
+.action-btn:hover.edit{background:#eff6ff;color:#1d4ed8}
+.action-btn:hover.del{background:#fef2f2;color:#dc2626}
+.empty-state{padding:60px 20px;text-align:center;color:#94a3b8}
+.empty-state .icon{font-size:48px;display:block;margin-bottom:12px;color:#cbd5e1}
+/* Modal */
+#modal{display:none;position:fixed;inset:0;background:rgba(0,30,64,.7);z-index:100;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+#modal.open{display:flex}
+.modal-box{background:white;width:100%;max-width:560px;border-radius:8px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.4)}
+.modal-head{background:#001e40;padding:24px 28px;display:flex;justify-content:space-between;align-items:center}
+.modal-head h2{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:white;text-transform:uppercase;letter-spacing:-.5px}
+.modal-close{background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:22px;line-height:1;transition:color .15s}
+.modal-close:hover{color:white}
+.modal-body{padding:28px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field.full{grid-column:1/-1}
+.field label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#475569}
+.field input,.field select,.field textarea{border:1.5px solid #e2e8f0;padding:11px 13px;font-family:'Inter',sans-serif;font-size:13px;color:#001e40;outline:none;background:#f8fafc;border-radius:4px;transition:border-color .2s,background .2s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#1d4ed8;background:white;box-shadow:0 0 0 3px rgba(29,78,216,.08)}
+.field textarea{resize:none}
+#img-preview{width:64px;height:64px;object-fit:cover;border:1px solid #e2e8f0;border-radius:4px;display:none;margin-top:6px}
+.modal-foot{padding:16px 28px;border-top:1px solid #f1f5f9;display:flex;justify-content:flex-end;gap:12px}
+.btn-cancel{background:none;border:none;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#64748b;cursor:pointer;padding:10px 16px;transition:color .15s}
+.btn-cancel:hover{color:#001e40}
+.btn-save{background:#001e40;color:white;border:none;padding:11px 24px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:1px;cursor:pointer;border-radius:4px;transition:background .2s;display:flex;align-items:center;gap:8px}
+.btn-save:hover{background:#003366}
+/* Toast */
+#toast{position:fixed;bottom:24px;right:24px;background:#001e40;color:white;padding:14px 20px;border-radius:6px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.3);transform:translateX(120%);transition:transform .35s cubic-bezier(.175,.885,.32,1.275);z-index:200}
+#toast.show{transform:translateX(0)}
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div class="logo">
+    <span class="icon">precision_manufacturing</span>
+    JBGERMANY &nbsp;<span style="font-size:10px;color:rgba(167,200,255,.5);font-family:Inter;font-weight:400;letter-spacing:1px">CONTROL CENTER</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:18px">
+    <div style="display:flex;align-items:center;gap:7px;font-size:11px;color:rgba(167,200,255,.7);text-transform:uppercase;letter-spacing:1px;font-weight:600">
+      <span class="status-dot"></span> En ligne
+    </div>
+    <a href="/admin/logout" class="logout"><span class="icon" style="font-size:16px">logout</span> Déconnexion</a>
+  </div>
+</div>
+
+<div id="layout">
+  <nav id="sidebar">
+    <div class="sidebar-section">Gestion</div>
+    <button class="sidebar-link active" id="nav-inventory">
+      <span class="icon">inventory_2</span> Inventaire
+    </button>
+    <button class="sidebar-link" id="nav-add">
+      <span class="icon">add_circle</span> Ajouter Produit
+    </button>
+    <div class="sidebar-section">Site</div>
+    <a href="/" target="_blank" class="sidebar-link"><span class="icon">home</span> Accueil</a>
+    <a href="/products.html" target="_blank" class="sidebar-link"><span class="icon">storefront</span> Produits</a>
+    <a href="/machines.html" target="_blank" class="sidebar-link"><span class="icon">build</span> Machines</a>
+    <div style="flex:1"></div>
+    <div style="padding:12px;font-size:11px;color:#94a3b8;border-top:1px solid #f1f5f9;margin-top:16px">
+      Connecté en tant que <strong style="color:#475569">admin</strong>
+    </div>
+  </nav>
+
+  <main id="main">
+    <h1>Gestion Inventaire</h1>
+    <p class="subtitle">Ajoutez, modifiez ou supprimez des produits en temps réel via Firebase.</p>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-label">Total Produits</div><div class="stat-value" id="s-total">—</div></div>
+      <div class="stat"><div class="stat-label">Catégories</div><div class="stat-value" id="s-cats">—</div></div>
+      <div class="stat accent"><div class="stat-label">Dernière mise à jour</div><div class="stat-value" id="s-time">—</div></div>
+      <div class="stat"><div class="stat-label">Statut Base de données</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
+          <span class="status-dot"></span>
+          <span style="font-family:'Space Grotesk';font-weight:700;color:#16a34a;font-size:14px">Firebase actif</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-box">
+        <span class="icon" style="font-size:18px;color:#cbd5e1">search</span>
+        <input id="search" type="text" placeholder="Rechercher par nom ou catégorie...">
+      </div>
+      <select id="cat-filter" class="filter">
+        <option value="">Toutes catégories</option>
+        <option>Bois</option><option>Acrylique</option><option>Aluminium</option>
+        <option>Carbide</option><option>Diamond</option><option>Composite</option><option>Métal</option>
+      </select>
+      <button class="btn-add" id="open-add">
+        <span class="icon" style="font-size:18px">add</span> Ajouter un Produit
+      </button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Aperçu</th>
+            <th>Désignation</th>
+            <th>Catégorie</th>
+            <th>Description</th>
+            <th style="text-align:right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="5" class="empty-state">
+            <span class="icon">hourglass_empty</span>
+            <div>Chargement...</div>
+          </td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- Modal -->
+<div id="modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="modal-title">Nouveau Produit</h2>
+      <button class="modal-close" id="close-modal">✕</button>
+    </div>
+    <form id="prod-form" class="modal-body">
+      <input type="hidden" id="f-id">
+      <div class="field full">
+        <label>Nom du Produit *</label>
+        <input type="text" id="f-name" required placeholder="Ex: Fraise hélicoïdale une dent">
+      </div>
+      <div class="field">
+        <label>Catégorie *</label>
+        <select id="f-cat" required>
+          <option value="">Choisir...</option>
+          <option>Bois</option><option>Acrylique</option><option>Aluminium</option>
+          <option>Carbide</option><option>Diamond</option><option>Composite</option><option>Métal</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Prix (optionnel)</label>
+        <input type="number" step="0.01" id="f-price" placeholder="0.00">
+      </div>
+      <div class="field full">
+        <label>URL de l'Image *</label>
+        <input type="url" id="f-img" required placeholder="https://...">
+        <img id="img-preview" src="" alt="Aperçu">
+      </div>
+      <div class="field full">
+        <label>Description *</label>
+        <textarea id="f-desc" rows="3" required placeholder="Caractéristiques techniques du produit..."></textarea>
+      </div>
+    </form>
+    <div class="modal-foot">
+      <button class="btn-cancel" id="cancel-modal">Annuler</button>
+      <button class="btn-save" id="save-btn" form="prod-form" type="submit">
+        <span class="icon" style="font-size:16px">save</span>
+        <span id="save-label">Enregistrer</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast">
+  <span class="icon" id="toast-icon" style="color:#4ade80">check_circle</span>
+  <span id="toast-msg"></span>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, deleteDoc, doc, updateDoc }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyDH4DK1J6SxHRhwtYDLBuXVT_E_qRDAksw",
+  authDomain:"tmmf-7848d.firebaseapp.com",
+  projectId:"tmmf-7848d",
+  storageBucket:"tmmf-7848d.firebasestorage.app",
+  messagingSenderId:"795485005893",
+  appId:"1:795485005893:web:7aa77900bfff30d6afdb2c"
+});
+const db = getFirestore(app);
+const col = collection(db, 'products');
+
+let all = [];
+
+// ── Toast ──────────────────────────────────────────────────────────────────
+function toast(msg, ok=true) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  document.getElementById('toast-icon').textContent = ok ? 'check_circle' : 'error';
+  document.getElementById('toast-icon').style.color = ok ? '#4ade80' : '#f87171';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ── Render ─────────────────────────────────────────────────────────────────
+function render() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const cat = document.getElementById('cat-filter').value;
+  const rows = all.filter(p =>
+    (!q || p.name.toLowerCase().includes(q) || (p.category||'').toLowerCase().includes(q)) &&
+    (!cat || p.category === cat)
+  );
+  const tbody = document.getElementById('tbody');
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="5" class="empty-state">
+      <span class="icon">inventory_2</span><div>Aucun produit trouvé.</div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = rows.map(p => `
+    <tr>
+      <td><img class="prod-img" src="${p.image||''}" onerror="this.src='https://placehold.co/48/f1f5f9/001e40?text=?'" alt=""></td>
+      <td><div class="prod-name">${p.name}</div><div class="prod-id">#${p.id.slice(0,8)}</div></td>
+      <td><span class="badge">${p.category||'—'}</span></td>
+      <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#64748b">${p.description||'—'}</td>
+      <td><div class="row-actions">
+        <button class="action-btn edit" onclick="window._edit('${p.id}')" title="Modifier">
+          <span class="icon" style="font-size:18px">edit</span></button>
+        <button class="action-btn del" onclick="window._del('${p.id}','${p.name.replace(/'/g,"\\'")}')" title="Supprimer">
+          <span class="icon" style="font-size:18px">delete</span></button>
+      </div></td>
+    </tr>`).join('');
+}
+
+// ── Live data ──────────────────────────────────────────────────────────────
+onSnapshot(query(col, orderBy('name','asc')), snap => {
+  all = snap.docs.map(d => ({id:d.id, ...d.data()}));
+  render();
+  document.getElementById('s-total').textContent = all.length;
+  document.getElementById('s-cats').textContent = new Set(all.map(p=>p.category).filter(Boolean)).size;
+  document.getElementById('s-time').textContent = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+});
+
+document.getElementById('search').addEventListener('input', render);
+document.getElementById('cat-filter').addEventListener('change', render);
+
+// ── Modal ──────────────────────────────────────────────────────────────────
+const modal = document.getElementById('modal');
+function openModal(title='Nouveau Produit') {
+  document.getElementById('modal-title').textContent = title;
+  modal.classList.add('open');
+}
+function closeModal() {
+  modal.classList.remove('open');
+  document.getElementById('prod-form').reset();
+  document.getElementById('f-id').value = '';
+  document.getElementById('img-preview').style.display='none';
+  document.getElementById('save-label').textContent='Enregistrer';
+}
+document.getElementById('open-add').onclick = () => openModal('Nouveau Produit');
+document.getElementById('nav-add').onclick = () => openModal('Nouveau Produit');
+document.getElementById('close-modal').onclick = closeModal;
+document.getElementById('cancel-modal').onclick = closeModal;
+modal.addEventListener('click', e => { if(e.target===modal) closeModal(); });
+
+// Image preview
+document.getElementById('f-img').addEventListener('input', function() {
+  const el = document.getElementById('img-preview');
+  if(this.value){ el.src=this.value; el.style.display='block'; el.onerror=()=>el.style.display='none'; }
+  else el.style.display='none';
+});
+
+// ── Save ───────────────────────────────────────────────────────────────────
+document.getElementById('prod-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  document.getElementById('save-label').textContent='...';
+  const id = document.getElementById('f-id').value;
+  const price = document.getElementById('f-price').value;
+  const data = {
+    name: document.getElementById('f-name').value.trim(),
+    category: document.getElementById('f-cat').value,
+    image: document.getElementById('f-img').value.trim(),
+    description: document.getElementById('f-desc').value.trim(),
+    updatedAt: new Date().toISOString(),
+  };
+  if(price) data.price = parseFloat(price);
+  try {
+    if(id) { await updateDoc(doc(db,'products',id), data); toast('Produit mis à jour !'); }
+    else { data.createdAt=new Date().toISOString(); await addDoc(col, data); toast('Produit ajouté !'); }
+    closeModal();
+  } catch(err) { toast('Erreur : '+err.message, false); document.getElementById('save-label').textContent='Enregistrer'; }
+});
+
+// ── Delete ─────────────────────────────────────────────────────────────────
+window._del = async (id, name) => {
+  if(!confirm(`Supprimer "${name}" ?`)) return;
+  try { await deleteDoc(doc(db,'products',id)); toast('Produit supprimé.'); }
+  catch(err) { toast('Erreur suppression.', false); }
+};
+
+// ── Edit ───────────────────────────────────────────────────────────────────
+window._edit = id => {
+  const p = all.find(x=>x.id===id); if(!p) return;
+  document.getElementById('f-id').value=id;
+  document.getElementById('f-name').value=p.name||'';
+  document.getElementById('f-cat').value=p.category||'';
+  document.getElementById('f-price').value=p.price||'';
+  document.getElementById('f-img').value=p.image||'';
+  document.getElementById('f-desc').value=p.description||'';
+  const prev=document.getElementById('img-preview');
+  if(p.image){prev.src=p.image;prev.style.display='block';}
+  document.getElementById('save-label').textContent='Mettre à jour';
+  openModal('Modifier le Produit');
+};
+</script>
+</body>
+</html>
